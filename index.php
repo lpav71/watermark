@@ -132,7 +132,7 @@ class TextWatermark extends BaseWatermark
         imagettftext($textImage, $this->size, 0, (int)($padding / 2), (int)($rotatedHeight - $padding / 2), $textColor, $fontPath, $this->text);
 
         // Вращаем текстовое изображение
-        $angle = -$this->rotate; // Поворачиваем против часовой стрелки
+        $angle = -$this->getRotate(); // Поворачиваем против часовой стрелки
         $rotatedTextImage = imagerotate($textImage, $angle, $transparentColor);
 
         // Считываем размеры после поворота
@@ -240,7 +240,7 @@ $textWatermark
     ->setFont("Nunito-Medium") // Устанавливаем шрифт
     ->setOpacity(0.3) // Устанавливаем прозрачность текста (0 - полностью прозрачно, 1 - полностью непрозрачно)
     ->setColor("#effa17") // Устанавливаем цвет текста в формате HEX
-    ->setRotate(-49.5) // Устанавливаем угол поворота (положительные значения вращают по часовой стрелке)
+    ->setRotate(-59.5) // Устанавливаем угол поворота (положительные значения вращают по часовой стрелке)
     ->setSize(50); // Устанавливаем размер текста
 
 // Создаём объект Watermarker для применения текстового водяного знака к вашему изображению
