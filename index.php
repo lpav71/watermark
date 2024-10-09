@@ -17,6 +17,11 @@ class BaseWatermark
         return $this;
     }
 
+    public function getOpacity(): float
+    {
+        return $this->opacity;
+    }
+
     public function getRotate(): float
     {
         return $this->rotate;
@@ -100,7 +105,7 @@ class TextWatermark extends BaseWatermark
 
         // Определяем цвет текста
         sscanf($this->color, "#%2x%2x%2x", $r, $g, $b);
-        $alpha = (int)(127 * (1 - $this->opacity));
+        $alpha = (int)(127 * (1 - $this->getOpacity()));
         $textColor = imagecolorallocatealpha($image, $r, $g, $b, $alpha);
 
         // Путь к шрифту
@@ -163,6 +168,7 @@ class Watermarker
     {
         // Загружаем основное изображение
         $this->image = imagecreatefromjpeg($sourcePath);
+        $watermarkImage = null;
 
         if ($this->watermark instanceof Watermark) {
             // Загружаем водяной знак
@@ -232,7 +238,7 @@ $textWatermark = new TextWatermark("пятаяпередача.рф");
 
 $textWatermark
     ->setFont("Nunito-Medium") // Устанавливаем шрифт
-    ->setOpacity(0.5) // Устанавливаем прозрачность текста (0 - полностью прозрачно, 1 - полностью непрозрачно)
+    ->setOpacity(0.3) // Устанавливаем прозрачность текста (0 - полностью прозрачно, 1 - полностью непрозрачно)
     ->setColor("#effa17") // Устанавливаем цвет текста в формате HEX
     ->setRotate(-49.5) // Устанавливаем угол поворота (положительные значения вращают по часовой стрелке)
     ->setSize(50); // Устанавливаем размер текста
