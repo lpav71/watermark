@@ -133,11 +133,11 @@ class TextWatermark extends BaseWatermark
         $rotatedHeight = (int)($textHeight + $padding);
 
         // Создаем временное изображение для текста
-        $textImage = imagecreatetruecolor($rotatedWidth, $rotatedHeight);
-        imagealphablending($textImage, false);
-        imagesavealpha($textImage, true);
-        $transparentColor = imagecolorallocatealpha($textImage, 255, 255, 255, 127);
-        imagefill($textImage, 0, 0, $transparentColor);
+        $textImage = imagecreatetruecolor($rotatedWidth, $rotatedHeight);// Создание нового изображения с заданной шириной и высотой
+        imagealphablending($textImage, false);// Отключение альфа-прозрачности для нового изображения
+        imagesavealpha($textImage, true);// Сохранение альфа-канала, чтобы поддерживать прозрачность
+        $transparentColor = imagecolorallocatealpha($textImage, 255, 255, 255, 127);// Создание прозрачного цвета с использованием полной прозрачности (альфа-127)
+        imagefill($textImage, 0, 0, $transparentColor);// Заполнение всего изображения прозрачным цветом
 
         // Рисуем текст на временном изображении
         imagettftext($textImage, $this->getSize(), 0, (int)($padding / 2), (int)($rotatedHeight - $padding / 2), $textColor, $fontPath, $this->text);
@@ -193,11 +193,11 @@ class Watermarker
                 $scaledHeight = (int)($originalHeight * $this->watermark->getScale());
 
                 // Создаем новое изображение с заданными размерами
-                $scaledWatermarkImage = imagecreatetruecolor($scaledWidth, $scaledHeight);
-                imagealphablending($scaledWatermarkImage, false);
-                imagesavealpha($scaledWatermarkImage, true);
-                $transparentColor = imagecolorallocatealpha($scaledWatermarkImage, 255, 255, 255, 127);
-                imagefill($scaledWatermarkImage, 0, 0, $transparentColor);
+                $scaledWatermarkImage = imagecreatetruecolor($scaledWidth, $scaledHeight);// Создание пустого изображения в формате true color с заданной шириной и высотой
+                imagealphablending($scaledWatermarkImage, false);// Отключение смешивания альфа-канала для следующего заполнения
+                imagesavealpha($scaledWatermarkImage, true);// Включение сохранения альфа-канала в изображении
+                $transparentColor = imagecolorallocatealpha($scaledWatermarkImage, 255, 255, 255, 127);// Создание прозрачного цвета (альфа = 127)
+                imagefill($scaledWatermarkImage, 0, 0, $transparentColor);// Заполнение всего нового изображения прозрачным цветом
 
                 // Масштабируем водяной знак
                 imagecopyresampled($scaledWatermarkImage, $watermarkImage, 0, 0, 0, 0, $scaledWidth, $scaledHeight, $originalWidth, $originalHeight);
