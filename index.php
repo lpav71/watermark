@@ -4,11 +4,11 @@ declare(strict_types=1);
 
 class BaseWatermark
 {
-    protected float $opacity;
-    protected string $color;
-    protected string $font;
-    protected int $size;
-    protected float $rotate;
+    private float $opacity;
+    private string $color;
+    private string $font;
+    private int $size;
+    private float $rotate;
 
 
     public function setOpacity($opacity): static
@@ -37,6 +37,21 @@ class BaseWatermark
     {
         $this->color = $color;
         return $this;
+    }
+
+    public function getColor(): string
+    {
+        return $this->color;
+    }
+
+    public function getFont(): string
+    {
+        return $this->font;
+    }
+
+    public function getSize(): int
+    {
+        return $this->size;
     }
 
     public function setFont($font): static
@@ -89,11 +104,6 @@ class TextWatermark extends BaseWatermark
         $this->text = $text;
     }
 
-    public function getText(): string
-    {
-        return $this->text;
-    }
-
     public function createImage($width, $height)
     {
         // Создаем основное изображение
@@ -104,15 +114,16 @@ class TextWatermark extends BaseWatermark
         imagesavealpha($image, true);
 
         // Определяем цвет текста
-        sscanf($this->color, "#%2x%2x%2x", $r, $g, $b);
+        sscanf($this->getColor(), "#%2x%2x%2x", $r, $g, $b);
         $alpha = (int)(127 * (1 - $this->getOpacity()));
         $textColor = imagecolorallocatealpha($image, $r, $g, $b, $alpha);
 
         // Путь к шрифту
-        $fontPath = __DIR__ . "/$this->font.ttf";
+        $fontFile = $this->getFont();
+        $fontPath = __DIR__ . "/$fontFile.ttf";
 
         // Извлекаем размеры текста без вращения
-        $box = imagettfbbox($this->size, 0, $fontPath, $this->text);
+        $box = imagettfbbox($this->getSize(), 0, $fontPath, $this->text);
         $textWidth = abs($box[2] - $box[0]);
         $textHeight = abs($box[1] - $box[7]);
 
@@ -129,7 +140,7 @@ class TextWatermark extends BaseWatermark
         imagefill($textImage, 0, 0, $transparentColor);
 
         // Рисуем текст на временном изображении
-        imagettftext($textImage, $this->size, 0, (int)($padding / 2), (int)($rotatedHeight - $padding / 2), $textColor, $fontPath, $this->text);
+        imagettftext($textImage, $this->getSize(), 0, (int)($padding / 2), (int)($rotatedHeight - $padding / 2), $textColor, $fontPath, $this->text);
 
         // Вращаем текстовое изображение
         $angle = -$this->getRotate(); // Поворачиваем против часовой стрелки
@@ -238,10 +249,10 @@ $textWatermark = new TextWatermark("пятаяпередача.рф");
 
 $textWatermark
     ->setFont("Nunito-Medium") // Устанавливаем шрифт
-    ->setOpacity(0.3) // Устанавливаем прозрачность текста (0 - полностью прозрачно, 1 - полностью непрозрачно)
+    ->setOpacity(0.6) // Устанавливаем прозрачность текста (0 - полностью прозрачно, 1 - полностью непрозрачно)
     ->setColor("#effa17") // Устанавливаем цвет текста в формате HEX
-    ->setRotate(-59.5) // Устанавливаем угол поворота (положительные значения вращают по часовой стрелке)
-    ->setSize(50); // Устанавливаем размер текста
+    ->setRotate(-29.5) // Устанавливаем угол поворота (положительные значения вращают по часовой стрелке)
+    ->setSize(35); // Устанавливаем размер текста
 
 // Создаём объект Watermarker для применения текстового водяного знака к вашему изображению
 $watermarker = new Watermarker($textWatermark);
