@@ -276,7 +276,7 @@ $watermarker2 = new Watermarker($watermark2);
 <body>
 
 <!-- Отображаем изображение с текстом в качестве водяного знака -->
-<img src="<?= $watermarker->apply("image.jpg")->toBase64() ?>" alt="Изображение с текстом"/>
+<img src="<?= $watermarker->apply("zerkalo-ozera.jpg")->toBase64() ?>" alt="Изображение с текстом"/>
 
 <!-- Отображаем изображение с водяным знаком -->
 <img src="<?= $watermarker2->apply("image.jpg")->toBase64() ?>" alt="Изображение с водяным знаком"/>
