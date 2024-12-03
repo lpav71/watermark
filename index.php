@@ -1,14 +1,14 @@
 <?php
 
-declare(strict_types=1);
+declare(strict_types = 1);
 
 class BaseWatermark
 {
-    private float $opacity;
+    private float  $opacity;
     private string $color;
     private string $font;
-    private int $size;
-    private float $rotate;
+    private int    $size;
+    private float  $rotate;
 
 
     public function setOpacity($opacity): static
@@ -70,11 +70,11 @@ class BaseWatermark
 class Watermark extends BaseWatermark
 {
     private string $path;
-    private float $scale; // Новое свойство
+    private float  $scale; // Новое свойство
 
     public function __construct($path)
     {
-        $this->path = $path;
+        $this->path  = $path;
         $this->scale = 1; // По умолчанию масштаб 1
     }
 
@@ -107,7 +107,7 @@ class TextWatermark extends BaseWatermark
     public function createImage($width, $height)
     {
         // Создаем основное изображение
-        $image = imagecreatetruecolor($width, $height);
+        $image   = imagecreatetruecolor($width, $height);
         $bgColor = imagecolorallocatealpha($image, 255, 255, 255, 127);
         imagefill($image, 0, 0, $bgColor);
         imagealphablending($image, false);
@@ -115,7 +115,7 @@ class TextWatermark extends BaseWatermark
 
         // Определяем цвет текста
         sscanf($this->getColor(), "#%2x%2x%2x", $r, $g, $b);
-        $alpha = (int)(127 * (1 - $this->getOpacity()));
+        $alpha     = (int)(127 * (1 - $this->getOpacity()));
         $textColor = imagecolorallocatealpha($image, $r, $g, $b, $alpha);
 
         // Путь к шрифту
@@ -123,31 +123,41 @@ class TextWatermark extends BaseWatermark
         $fontPath = __DIR__ . "/$fontFile.ttf";
 
         // Извлекаем размеры текста без вращения
-        $box = imagettfbbox($this->getSize(), 0, $fontPath, $this->text);
-        $textWidth = abs($box[2] - $box[0]);
+        $box        = imagettfbbox($this->getSize(), 0, $fontPath, $this->text);
+        $textWidth  = abs($box[2] - $box[0]);
         $textHeight = abs($box[1] - $box[7]);
 
         // Увеличиваем размер для учёта вращения
-        $padding = 10; // Добавляем небольшой отступ
-        $rotatedWidth = (int)($textWidth + $padding);
+        $padding       = 10;                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                           // Добавляем небольшой отступ
+        $rotatedWidth  = (int)($textWidth + $padding);
         $rotatedHeight = (int)($textHeight + $padding);
 
         // Создаем временное изображение для текста
-        $textImage = imagecreatetruecolor($rotatedWidth, $rotatedHeight);// Создание нового изображения с заданной шириной и высотой
-        imagealphablending($textImage, false);// Отключение альфа-прозрачности для нового изображения
-        imagesavealpha($textImage, true);// Сохранение альфа-канала, чтобы поддерживать прозрачность
-        $transparentColor = imagecolorallocatealpha($textImage, 255, 255, 255, 127);// Создание прозрачного цвета с использованием полной прозрачности (альфа-127)
-        imagefill($textImage, 0, 0, $transparentColor);// Заполнение всего изображения прозрачным цветом
+        $textImage = imagecreatetruecolor($rotatedWidth,
+            $rotatedHeight);                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                           // Создание нового изображения с заданной шириной и высотой
+        imagealphablending($textImage,
+            false);                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                    // Отключение альфа-прозрачности для нового изображения
+        imagesavealpha($textImage,
+            true);                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                     // Сохранение альфа-канала, чтобы поддерживать прозрачность
+        $transparentColor = imagecolorallocatealpha($textImage,
+            255,
+            255,
+            255,
+            127);                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                      // Создание прозрачного цвета с использованием полной прозрачности (альфа-127)
+        imagefill($textImage,
+            0,
+            0,
+            $transparentColor);                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                        // Заполнение всего изображения прозрачным цветом
 
         // Рисуем текст на временном изображении
         imagettftext($textImage, $this->getSize(), 0, (int)($padding / 2), (int)($rotatedHeight - $padding / 2), $textColor, $fontPath, $this->text);
 
         // Вращаем текстовое изображение
-        $angle = -$this->getRotate(); // Поворачиваем против часовой стрелки
+        $angle            = -$this->getRotate();                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                  // Поворачиваем против часовой стрелки
         $rotatedTextImage = imagerotate($textImage, $angle, $transparentColor);
 
         // Считываем размеры после поворота
-        $finalRotatedWidth = imagesx($rotatedTextImage);
+        $finalRotatedWidth  = imagesx($rotatedTextImage);
         $finalRotatedHeight = imagesy($rotatedTextImage);
 
         // Центрируем текст на основном изображении
@@ -168,7 +178,7 @@ class TextWatermark extends BaseWatermark
 class Watermarker
 {
     private BaseWatermark $watermark;
-    private ?GdImage $image;
+    private ?GdImage      $image;
 
     public function __construct(BaseWatermark $watermark)
     {
@@ -178,7 +188,7 @@ class Watermarker
     public function apply($sourcePath): static
     {
         // Загружаем основное изображение
-        $this->image = imagecreatefromjpeg($sourcePath);
+        $this->image    = imagecreatefromjpeg($sourcePath);
         $watermarkImage = null;
 
         if ($this->watermark instanceof Watermark) {
@@ -187,17 +197,23 @@ class Watermarker
 
             // Применяем масштабирование
             if ($this->watermark->getScale() != 1) {
-                $originalWidth = imagesx($watermarkImage);
+                $originalWidth  = imagesx($watermarkImage);
                 $originalHeight = imagesy($watermarkImage);
-                $scaledWidth = (int)($originalWidth * $this->watermark->getScale());
-                $scaledHeight = (int)($originalHeight * $this->watermark->getScale());
+                $scaledWidth    = (int)($originalWidth * $this->watermark->getScale());
+                $scaledHeight   = (int)($originalHeight * $this->watermark->getScale());
 
                 // Создаем новое изображение с заданными размерами
-                $scaledWatermarkImage = imagecreatetruecolor($scaledWidth, $scaledHeight);// Создание пустого изображения в формате true color с заданной шириной и высотой
-                imagealphablending($scaledWatermarkImage, false);// Отключение смешивания альфа-канала для следующего заполнения
-                imagesavealpha($scaledWatermarkImage, true);// Включение сохранения альфа-канала в изображении
+                $scaledWatermarkImage = imagecreatetruecolor($scaledWidth,
+                    $scaledHeight);                                                                    // Создание пустого изображения в формате true color с заданной шириной и высотой
+                imagealphablending($scaledWatermarkImage,
+                    false);                                                                            // Отключение смешивания альфа-канала для следующего заполнения
+                imagesavealpha($scaledWatermarkImage,
+                    true);                                                                             // Включение сохранения альфа-канала в изображении
                 $transparentColor = imagecolorallocatealpha($scaledWatermarkImage, 255, 255, 255, 127);// Создание прозрачного цвета (альфа = 127)
-                imagefill($scaledWatermarkImage, 0, 0, $transparentColor);// Заполнение всего нового изображения прозрачным цветом
+                imagefill($scaledWatermarkImage,
+                    0,
+                    0,
+                    $transparentColor);                                                                // Заполнение всего нового изображения прозрачным цветом
 
                 // Масштабируем водяной знак
                 imagecopyresampled($scaledWatermarkImage, $watermarkImage, 0, 0, 0, 0, $scaledWidth, $scaledHeight, $originalWidth, $originalHeight);
@@ -210,9 +226,9 @@ class Watermarker
         }
 
         // Получаем размеры изображений
-        $imageWidth = imagesx($this->image);
-        $imageHeight = imagesy($this->image);
-        $watermarkWidth = imagesx($watermarkImage);
+        $imageWidth      = imagesx($this->image);
+        $imageHeight     = imagesy($this->image);
+        $watermarkWidth  = imagesx($watermarkImage);
         $watermarkHeight = imagesy($watermarkImage);
 
         // Определяем координаты для центра
@@ -251,7 +267,7 @@ $textWatermark
     ->setFont("Nunito-Medium") // Устанавливаем шрифт
     ->setOpacity(0.6) // Устанавливаем прозрачность текста (0 - полностью прозрачно, 1 - полностью непрозрачно)
     ->setColor("#effa17") // Устанавливаем цвет текста в формате HEX
-    ->setRotate(-29.5) // Устанавливаем угол поворота (положительные значения вращают по часовой стрелке)
+    ->setRotate(-29.5)    // Устанавливаем угол поворота (положительные значения вращают по часовой стрелке)
     ->setSize(35); // Устанавливаем размер текста
 
 // Создаём объект Watermarker для применения текстового водяного знака к вашему изображению
