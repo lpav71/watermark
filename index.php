@@ -258,10 +258,10 @@ class Watermarker
 }
 
 // Создаём экземпляр класса Watermark с указанным путём к файлу изображения водяного знака
-$watermark = new Watermark("FG-copyright-mini.png");
+$watermark = new Watermark("test.png");
 
 // Создаём экземпляр класса TextWatermark для текстового водяного знака
-$textWatermark = new TextWatermark("пятаяпередача.рф");
+$textWatermark = new TextWatermark("YourName.рф");
 
 $textWatermark
     ->setFont("Nunito-Medium") // Устанавливаем шрифт
@@ -274,8 +274,8 @@ $textWatermark
 $watermarker = new Watermarker($textWatermark);
 
 // Создаём экземпляр класса Watermark с указанным путём к файлу изображения водяного знака
-$watermark2 = new Watermark("FG-copyright-mini.png");
-$watermark2->setScale(1.8); // Устанавливаем масштаб
+$watermark2 = new Watermark("test.png");
+$watermark2->setScale(0.5); // Устанавливаем масштаб
 
 // Создаём объект Watermarker для применения второго водяного знака к вашему изображению
 $watermarker2 = new Watermarker($watermark2);
@@ -299,3 +299,4 @@ $watermarker2 = new Watermarker($watermark2);
 
 </body>
 </html>
+
